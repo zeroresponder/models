@@ -97,7 +97,7 @@ def load_model():
 
 def predict(model, data):
     df = pd.read_csv("heart_cleaned.csv")
-    df = pd.concat([pd.DataFrame.from_records([test_data]), df])
+    df = pd.concat([pd.DataFrame.from_records([data]), df])
 
     #df = pd.DataFrame.from_records([test_data])
     print(df.head())
