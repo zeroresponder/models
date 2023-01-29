@@ -106,6 +106,7 @@ def predict(model, data):
 
     input_data = df.iloc[0].to_numpy()[0:inputs]
 
+    print(input_data)
     res = model.predict(np.asarray([input_data]))
     return res
 
