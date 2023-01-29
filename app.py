@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 @app.route('/predict')
 def predict():
-    data = request.args.to_dict()
-    print(data.to_dict())
+    data = request.args
+    print(data)
     return {"result": str(predict_nn(model, data)[0][0])}
 
 if __name__ == "__main__":
