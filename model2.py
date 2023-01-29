@@ -13,13 +13,13 @@ drop_columns = ['trestbps', "slope", "ca", 'thal', "oldpeak"]
 inputs = 13 - len(drop_columns)
 
 # test_data = {
-#     "age": 65,
+#     "age": 40,
 #     "sex": 1,
 #     "cp": 0,
-#     "chol": 210,
-#     "restecg": 2,
-#     "fbs": 1,
-#     "thalach": 179,
+#     "chol": 160,
+#     "restecg": 1,
+#     "fbs": 0,
+#     "thalach": 130,
 #     "exang": 1
 # }
 
@@ -74,6 +74,7 @@ def create_model():
 
     model = Sequential()
     model.add(Dense(8, input_dim=inputs, kernel_initializer='normal',  kernel_regularizer=keras.regularizers.l1(0.001),activation='relu'))
+    model.add(Dropout(.5))
     model.add(Dense(4, kernel_initializer='normal',  kernel_regularizer=keras.regularizers.l1(0.001),activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
 
@@ -87,7 +88,7 @@ def create_model():
     _, accuracy = model.evaluate(x_test, y_test)
     print('Accuracy: %.2f' % (accuracy*100))
 
-    model.save("model.h5")
+    model.save("FinalModel.h5")
     return model
 
 
@@ -99,7 +100,6 @@ def predict(model, data):
     df = pd.read_csv("heart_cleaned.csv")
     df = pd.concat([pd.DataFrame.from_records([test_data]), df])
 
-    #df = pd.DataFrame.from_records([test_data])
     print(df.head())
     df[scale_columns] = StandardScaler().fit_transform(df[scale_columns])
     print(df.head())
