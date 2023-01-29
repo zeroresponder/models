@@ -6,11 +6,13 @@ from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
 
+inputs = 8
+#scale_columns = ['age']
 scale_columns = ['age', 'chol', 'thalach']
-#drop_columns = ['trestbps', "slope", "ca", 'thal', "oldpeak", 'cp', 'restecg', 'exang', 'thalach']
 drop_columns = ['trestbps', "slope", "ca", 'thal', "oldpeak"]
-inputs = 13 - len(drop_columns)
 
 # test_data = {
 #     "age": 65,
@@ -24,16 +26,15 @@ inputs = 13 - len(drop_columns)
 # }
 
 test_data = {
-    "age": 70,
+    "age": 90,
     "sex": 1,
-    "cp": 3,
-    "chol": 302,
-    "restecg": 0,
+    "cp": 1,
+    "chol": 204,
+    "restecg": 1,
     "fbs": 1,
-    "thalach": 236,
-    "exang": 0
+    "thalach": 172,
+    "exang": 1
 }
-
 #sex:
 #Male = 1; Female = 0
 
@@ -62,7 +63,6 @@ test_data = {
 def create_model():
     df = pd.read_csv("heart.csv")
     df = df.drop(drop_columns, axis=1)
-    print("Mean Age:", np.mean(df['age'].to_numpy()))
     df.to_csv("heart_cleaned.csv", index=False)
     df[scale_columns] = StandardScaler().fit_transform(df[scale_columns])
     print(df.head())
@@ -72,22 +72,13 @@ def create_model():
 
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 
-    model = Sequential()
-    model.add(Dense(8, input_dim=inputs, kernel_initializer='normal',  kernel_regularizer=keras.regularizers.l1(0.001),activation='relu'))
-    model.add(Dense(4, kernel_initializer='normal',  kernel_regularizer=keras.regularizers.l1(0.001),activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))
+    model=LogisticRegression(C=1.0,class_weight='balanced',dual=False,
+fit_intercept=True, intercept_scaling=1,max_iter=100,multi_class='auto',
+n_jobs=None,penalty='l2',random_state=1234,solver='lbfgs',tol=0.0001,
+verbose=0,warm_start=False)
 
-    # Compile model
-    adam = keras.optimizers.Adam(lr=0.001)
-    model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+    model.fit(x_train, y_train)
 
-    print(model.summary())
-
-    history = model.fit(x_train, y_train, epochs=150, batch_size=10)
-    _, accuracy = model.evaluate(x_test, y_test)
-    print('Accuracy: %.2f' % (accuracy*100))
-
-    model.save("model.h5")
     return model
 
 
@@ -95,7 +86,10 @@ def load_model():
     model = keras.models.load_model("model.h5")
     return model
 
-def predict(model, data):
+if __name__ == "__main__":
+    create_model()
+    model = load_model()
+
     df = pd.read_csv("heart_cleaned.csv")
     df = pd.concat([pd.DataFrame.from_records([test_data]), df])
 
@@ -105,14 +99,7 @@ def predict(model, data):
     print(df.head())
 
     input_data = df.iloc[0].to_numpy()[0:inputs]
-
+    print(input_data)
     res = model.predict(np.asarray([input_data]))
-    return res
-
-
-if __name__ == "__main__":
-    #create_model()
-    model = load_model()
-
-    res = predict(model, test_data)
+    #res = model.predict(np.asarray([[1.8268750287215434,0,0,-1.8810356645907673,0,1,-1.0486919785765447,0]]))
     print(res)
