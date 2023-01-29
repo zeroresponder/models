@@ -12,27 +12,18 @@ scale_columns = ['age', 'chol', 'thalach']
 drop_columns = ['trestbps', "slope", "ca", 'thal', "oldpeak"]
 inputs = 13 - len(drop_columns)
 
-# test_data = {
-#     "age": 65,
-#     "sex": 1,
-#     "cp": 0,
-#     "chol": 210,
-#     "restecg": 2,
-#     "fbs": 1,
-#     "thalach": 179,
-#     "exang": 1
-# }
-
 test_data = {
-    "age": 70,
-    "sex": 1,
-    "cp": 0,
-    "chol": 150,
-    "restecg": 1,
-    "fbs": 0,
-    "thalach": 150,
-    "exang": 0
+     "age": 65,
+     "sex": 1,
+     "cp": 0,
+     "chol": 210,
+     "restecg": 2,
+     "fbs": 1,
+     "thalach": 179,
+     "exang": 1
 }
+
+
 
 #sex:
 #Male = 1; Female = 0
@@ -112,7 +103,7 @@ def predict(model, data):
 
 
 if __name__ == "__main__":
-    #create_model()
+   # create_model()
     model = load_model()
 
     res = predict(model, test_data)
