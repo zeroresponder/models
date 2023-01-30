@@ -13,14 +13,14 @@ drop_columns = ['trestbps', "slope", "ca", 'thal', "oldpeak"]
 inputs = 13 - len(drop_columns)
 
 test_data = {
-     "age": 65,
+     "age": 45,
      "sex": 1,
-     "cp": 0,
-     "chol": 210,
-     "restecg": 2,
+     "cp": 3,
+     "chol": 300,
+     "restecg": 0,
      "fbs": 1,
      "thalach": 179,
-     "exang": 1
+     "exang": 0
 }
 
 
@@ -107,4 +107,12 @@ if __name__ == "__main__":
     model = load_model()
 
     res = predict(model, test_data)
-    print(res)
+    print("Age:", test_data['age'])
+    print("Sex:", test_data['sex'])
+    print("Chest Pain:", test_data['cp'])
+    print("Cholesterol", test_data['chol'])
+    print("ECG Results", test_data['restecg'])
+    print("Fasting Blood Sugar (above 120)", test_data['fbs'])
+    print("Max Heart Hate", test_data['thalach'])
+    print("Chest Pains when excersising")
+    print(res[0][0] * 100, " percent risk of Heart Disease")
